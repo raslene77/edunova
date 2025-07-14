@@ -17,6 +17,8 @@ import { AuthService, User } from '../../services/auth.service';
         <ul class='nav-links'>
           <li><a [routerLink]="isLoggedIn ? '/dashboard' : '/home'" routerLinkActive="active">{{ isLoggedIn ? 'Tableau de bord' : 'Accueil' }}</a></li>
 
+          <li *ngIf="isLoggedIn"><a routerLink="/publish" routerLinkActive="active">Publier un document</a></li>
+
           <li class="dropdown" *ngIf="!isLoggedIn" (mouseenter)="openOnly('documents')" (click)="toggleDropdown('documents')">
             <a routerLink="/documents" routerLinkActive="active">Documents</a>
             <ul class="dropdown-content" [class.show]="dropdowns.documents">
@@ -56,6 +58,8 @@ import { AuthService, User } from '../../services/auth.service';
           <li class="dropdown hamburger" (mouseenter)="openOnly('more')" (click)="toggleDropdown('more')">
             <a href='#more' title="More">&#9776;</a>
             <ul class="dropdown-content" [class.show]="dropdowns.more">
+              <li *ngIf="isLoggedIn"><a routerLink="/dashboard">Tableau de bord</a></li>
+              <li *ngIf="isLoggedIn"><a routerLink="/publish">Publier un document</a></li>
               <li *ngIf="isLoggedIn"><a routerLink="/profile">Profil</a></li>
               <li><a routerLink="/settings">Paramètres</a></li>
               <li *ngIf="isLoggedIn"><a href="#" (click)="logout($event)">Déconnexion</a></li>

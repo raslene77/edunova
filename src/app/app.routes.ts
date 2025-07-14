@@ -6,6 +6,8 @@ import { ConnectComponent } from './pages/connect/connect.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { CourseDetailComponent } from './pages/course-detail/course-detail.component';
+import { PublishComponent } from './pages/publish/publish.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -16,5 +18,7 @@ export const routes: Routes = [
   { path: 'connect', component: ConnectComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'settings', component: SettingsComponent },
+  { path: 'course-detail/:id', component: CourseDetailComponent },
+  { path: 'publish', component: PublishComponent },
   { path: '**', redirectTo: '/home' }
 ];

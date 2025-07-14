@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ApiService, Document, Video } from '../../../services/api.service';
 
 @Component({
@@ -69,7 +70,7 @@ import { ApiService, Document, Video } from '../../../services/api.service';
 
           <!-- Documents Grid -->
           <div class="content-grid" *ngIf="activeTab === 'documents'">
-            <div class="content-card" *ngFor="let doc of filteredDocuments">
+            <div class="content-card" *ngFor="let doc of filteredDocuments" (click)="openDocumentDetail(doc)">
               <div class="card-thumbnail">
                 <img [src]="doc.thumbnail" [alt]="doc.title">
                 <div class="card-type">{{ doc.type }}</div>
@@ -89,7 +90,7 @@ import { ApiService, Document, Video } from '../../../services/api.service';
 
           <!-- Videos Grid -->
           <div class="content-grid" *ngIf="activeTab === 'videos'">
-            <div class="content-card" *ngFor="let video of filteredVideos">
+            <div class="content-card" *ngFor="let video of filteredVideos" (click)="openVideoDetail(video)">
               <div class="card-thumbnail">
                 <img [src]="video.thumbnail" [alt]="video.title">
                 <div class="video-duration">{{ video.duration }}</div>
@@ -252,6 +253,7 @@ import { ApiService, Document, Video } from '../../../services/api.service';
     .content-card:hover {
       transform: translateY(-5px);
       background: rgba(255, 255, 255, 0.15);
+      cursor: pointer;
     }
 
     .card-thumbnail {
@@ -440,6 +442,7 @@ export class DashboardComponent implements OnInit {
   activeTab = 'documents';
 
   constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnInit() {
     this.loadDocuments();
@@ -504,5 +507,14 @@ export class DashboardComponent implements OnInit {
       return (views / 1000).toFixed(1) + 'K';
     }
     return views.toString();
+  }
+
+  openDocumentDetail(document: Document) {
+    this.router.navigate(['/course-detail', document.id]);
+  }
+
+  openVideoDetail(video: Video) {
+    // For now, just show an alert. In a real app, this would navigate to video player
+    alert(`Ouverture de la vidéo: ${video.title}`);
   }
 }
