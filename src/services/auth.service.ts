@@ -34,6 +34,9 @@ export class AuthService {
 
   logout(): void {
     this.apiService.logout();
+    // Clear all user-related data
+    localStorage.removeItem('userSettings');
+    localStorage.removeItem('userProgress');
     this.router.navigate(['/home']).then(() => {
       // Ensure we're on the home page after logout
       window.location.reload();
