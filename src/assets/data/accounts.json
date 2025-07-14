@@ -1,0 +1,34 @@
+{
+  "accounts": [
+    {
+      "id": 4,
+      "fullName": "Salma Bouazizi",
+      "email": "salma.bouazizi@email.com",
+      "password": "password123",
+      "avatar": "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop",
+      "level": "Terminale",
+      "specialty": "Sciences Expérimentales",
+      "joinDate": "2024-03-05"
+    },
+    {
+      "id": 5,
+      "fullName": "Youssef Mansouri",
+      "email": "youssef.mansouri@email.com",
+      "password": "password123",
+      "avatar": "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop",
+      "level": "1ère année Université",
+      "specialty": "Informatique",
+      "joinDate": "2023-11-12"
+    },
+    {
+      "id": 6,
+      "fullName": "Raslene Haddaji",
+      "email": "raslene.haddaji@email.com",
+      "password": "password123",
+      "avatar": "/assets/IMG_20250205_191659_196~4.jpg",
+      "level": "Prépa",
+      "specialty": "Technologie",
+      "joinDate": "2024-04-26"
+    }
+  ]
+}
