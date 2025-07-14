@@ -247,7 +247,25 @@ export class NavbarComponent implements OnInit {
 
   logout(event: Event) {
     event.preventDefault();
+    // Close all dropdowns first
+    for (const key in this.dropdowns) {
+      this.dropdowns[key as keyof typeof this.dropdowns] = false;
+    }
+    
+    // Then logout and redirect
     this.authService.logout();
+  }
+
+  @HostListener('document:click', ['$event'])
+  closeOnOutsideClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown')) {
+      for (const key in this.dropdowns) {
+        this.dropdowns[key as keyof typeof this.dropdowns] = false;
+      }
+    }
+  }
+}
     // Close all dropdowns
     for (const key in this.dropdowns) {
       this.dropdowns[key as keyof typeof this.dropdowns] = false;

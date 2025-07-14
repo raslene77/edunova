@@ -131,6 +131,8 @@ export class ApiService {
   logout(): void {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userSettings');
+    localStorage.removeItem('userProgress');
     this.currentUserSubject.next(null);
   }
 

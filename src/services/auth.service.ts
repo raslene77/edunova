@@ -34,7 +34,10 @@ export class AuthService {
 
   logout(): void {
     this.apiService.logout();
-    this.router.navigate(['/home']);
+    this.router.navigate(['/home']).then(() => {
+      // Ensure we're on the home page after logout
+      window.location.reload();
+    });
   }
 
   getCurrentUser(): User | null {
