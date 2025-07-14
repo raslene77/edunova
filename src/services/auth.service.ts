@@ -1,39 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiService } from './api.service';
+import { DataService, User } from './data.service';
 import { Router } from '@angular/router';
-
-export interface User {
-  id: number;
-  fullName: string;
-  email: string;
-  avatar: string;
-  level: string;
-  specialty: string;
-  joinDate: string;
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  public currentUser$ = this.apiService.currentUser$;
+  public currentUser$ = this.dataService.currentUser$;
 
   constructor(
-    private apiService: ApiService,
+    private dataService: DataService,
     private router: Router
   ) {}
 
   login(email: string, password: string): Observable<any> {
-    return this.apiService.login(email, password);
+    return this.dataService.login(email, password);
   }
 
   register(userData: any): Observable<any> {
-    return this.apiService.register(userData);
+    return this.dataService.register(userData);
   }
 
   logout(): void {
-    this.apiService.logout();
+    this.dataService.logout();
     // Clear all user-related data
     localStorage.removeItem('userSettings');
     localStorage.removeItem('userProgress');
@@ -44,10 +34,10 @@ export class AuthService {
   }
 
   getCurrentUser(): User | null {
-    return this.apiService.getCurrentUserValue();
+    return this.dataService.getCurrentUserValue();
   }
 
   isLoggedIn(): boolean {
-    return this.apiService.isLoggedIn();
+    return this.dataService.isLoggedIn();
   }
 }

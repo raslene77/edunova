@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService, User } from '../../../services/auth.service';
-import { ApiService } from '../../../services/api.service';
+import { DataService } from '../../../services/data.service';
 
 @Component({
   selector: 'app-profile',
@@ -365,7 +365,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private apiService: ApiService
+    private dataService: DataService
   ) {}
 
   ngOnInit() {
@@ -379,8 +379,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   loadUserStats() {
-    if (this.apiService.isLoggedIn()) {
-      this.apiService.getUserStats().subscribe({
+    if (this.dataService.isLoggedIn()) {
+      this.dataService.getUserStats().subscribe({
         next: (stats) => {
           this.targetStats = {
             courses: stats.courses || 24,

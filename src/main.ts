@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
 import { routes } from './app/app.routes';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { AppFooter } from './components/footer/footer.component';
@@ -73,7 +72,6 @@ export class App {}
 
 bootstrapApplication(App, {
   providers: [
-    provideRouter(routes),
-    provideHttpClient()
+    provideRouter(routes)
   ]
 });

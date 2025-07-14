@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { ApiService, Document } from '../../../services/api.service';
+import { DataService, Document } from '../../../services/data.service';
 
 @Component({
   selector: 'app-course-detail',
@@ -459,7 +459,7 @@ export class CourseDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private apiService: ApiService
+    private dataService: DataService
   ) {}
 
   ngOnInit() {
@@ -472,7 +472,7 @@ export class CourseDetailComponent implements OnInit {
   }
 
   loadDocument(id: number) {
-    this.apiService.getDocuments().subscribe({
+    this.dataService.getDocuments().subscribe({
       next: (response) => {
         this.document = response.documents.find(doc => doc.id === id) || null;
         if (this.document) {
@@ -493,6 +493,7 @@ export class CourseDetailComponent implements OnInit {
     if (!this.document) return;
 
     this.apiService.getDocuments().subscribe({
+    this.dataService.getDocuments().subscribe({
       next: (response) => {
         const allDocuments = response.documents.filter(doc => doc.id !== this.document!.id);
         
@@ -549,7 +550,7 @@ export class CourseDetailComponent implements OnInit {
     
     // Update progress
     const newProgress = Math.min(this.progressPercentage + 10, 100);
-    this.apiService.updateProgress('document', this.document.id, newProgress, newProgress === 100).subscribe();
+    this.dataService.updateProgress('document', this.document.id, newProgress, newProgress === 100).subscribe();
     this.progressPercentage = newProgress;
     
     // In a real app, this would navigate to the actual course content

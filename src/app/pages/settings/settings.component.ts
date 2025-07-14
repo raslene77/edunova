@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ApiService, Settings } from '../../../services/api.service';
+import { DataService, Settings } from '../../../services/data.service';
 
 @Component({
   selector: 'app-settings',
@@ -543,15 +543,15 @@ export class SettingsComponent implements OnInit {
   showSaveNotification = false;
   showDeleteConfirmation = false;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private dataService: DataService) {}
 
   ngOnInit() {
     this.loadSettings();
   }
 
   loadSettings() {
-    if (this.apiService.isLoggedIn()) {
-      this.apiService.getSettings().subscribe({
+    if (this.dataService.isLoggedIn()) {
+      this.dataService.getSettings().subscribe({
         next: (settings) => {
           this.settings = settings;
         },
@@ -574,8 +574,8 @@ export class SettingsComponent implements OnInit {
   }
 
   saveSettings() {
-    if (this.apiService.isLoggedIn()) {
-      this.apiService.updateSettings(this.settings).subscribe({
+    if (this.dataService.isLoggedIn()) {
+      this.dataService.updateSettings(this.settings).subscribe({
         next: () => {
           this.showSaveNotification = true;
           setTimeout(() => {

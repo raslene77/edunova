@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ApiService, Document, Video } from '../../../services/api.service';
+import { DataService, Document, Video } from '../../../services/data.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -442,7 +442,7 @@ export class DashboardComponent implements OnInit {
   activeTab = 'documents';
 
   constructor(private apiService: ApiService) {}
-  constructor(private apiService: ApiService, private router: Router) {}
+  constructor(private dataService: DataService, private router: Router) {}
 
   ngOnInit() {
     this.loadDocuments();
@@ -457,7 +457,7 @@ export class DashboardComponent implements OnInit {
       type: this.selectedType
     };
 
-    this.apiService.getDocuments(filters).subscribe({
+    this.dataService.getDocuments(filters).subscribe({
       next: (response) => {
         this.documents = response.documents;
         this.filteredDocuments = response.documents;
@@ -475,7 +475,7 @@ export class DashboardComponent implements OnInit {
       level: this.selectedLevel
     };
 
-    this.apiService.getVideos(filters).subscribe({
+    this.dataService.getVideos(filters).subscribe({
       next: (response) => {
         this.videos = response.videos;
         this.filteredVideos = response.videos;
