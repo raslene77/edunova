@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, delay } from 'rxjs';
 
 export interface User {
   id: number;
@@ -64,7 +64,7 @@ export class DataService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  // Static data - in a real app, these would be loaded from JSON files
+  // Static data - no API calls, just JSON data
   private accounts: User[] = [
     {
       id: 1,
@@ -115,7 +115,7 @@ export class DataService {
       id: 6,
       fullName: "Raslene Haddaji",
       email: "raslene.haddaji@email.com",
-      avatar: "/assets/IMG_20250205_191659_196~4.jpg",
+      avatar: "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop",
       level: "Prépa",
       specialty: "Technologie",
       joinDate: "2024-04-26"
@@ -268,76 +268,50 @@ export class DataService {
     }
   }
 
-  // Authentication methods
+  // Authentication methods - no API calls
   login(email: string, password: string): Observable<any> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        // Find user in accounts
-        const user = this.accounts.find(account => 
-          account.email === email && password === 'password123' // All demo accounts use same password
-        );
-        
-        if (user) {
-          const userData = {
-            id: user.id,
-            fullName: user.fullName,
-            email: user.email,
-            avatar: user.avatar,
-            level: user.level,
-            specialty: user.specialty,
-            joinDate: user.joinDate
-          };
-          
-          localStorage.setItem('currentUser', JSON.stringify(userData));
-          localStorage.setItem('isLoggedIn', 'true');
-          this.currentUserSubject.next(userData);
-          
-          observer.next({ user: userData, token: 'mock-jwt-token' });
-          observer.complete();
-        } else {
-          observer.error(new Error('Email ou mot de passe incorrect'));
-        }
-      }, 500); // Simulate network delay
-    });
+    // Find user in static accounts array
+    const user = this.accounts.find(account => 
+      account.email === email && password === 'password123'
+    );
+    
+    if (user) {
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      localStorage.setItem('isLoggedIn', 'true');
+      this.currentUserSubject.next(user);
+      
+      return of({ user, token: 'mock-jwt-token' }).pipe(delay(500));
+    } else {
+      throw new Error('Email ou mot de passe incorrect');
+    }
   }
 
   register(userData: any): Observable<any> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        // Check if user already exists
-        const existingUser = this.accounts.find(account => account.email === userData.email);
-        if (existingUser) {
-          observer.error(new Error('Un compte avec cet email existe déjà'));
-          return;
-        }
+    // Check if user already exists
+    const existingUser = this.accounts.find(account => account.email === userData.email);
+    if (existingUser) {
+      throw new Error('Un compte avec cet email existe déjà');
+    }
 
-        // Create new user
-        const newUser = {
-          id: this.accounts.length + 1,
-          fullName: userData.fullName,
-          email: userData.email,
-          avatar: this.getRandomAvatar(),
-          level: userData.level,
-          specialty: userData.specialty,
-          joinDate: new Date().toISOString().split('T')[0]
-        };
+    // Create new user
+    const newUser = {
+      id: this.accounts.length + 1,
+      fullName: userData.fullName,
+      email: userData.email,
+      avatar: this.getRandomAvatar(),
+      level: userData.level,
+      specialty: userData.specialty,
+      joinDate: new Date().toISOString().split('T')[0]
+    };
 
-        // Add to accounts array
-        this.accounts.push(newUser);
+    // Add to accounts array
+    this.accounts.push(newUser);
 
-        // Save to localStorage
-        const existingAccounts = JSON.parse(localStorage.getItem('registeredAccounts') || '[]');
-        existingAccounts.push(newUser);
-        localStorage.setItem('registeredAccounts', JSON.stringify(existingAccounts));
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
+    localStorage.setItem('isLoggedIn', 'true');
+    this.currentUserSubject.next(newUser);
 
-        localStorage.setItem('currentUser', JSON.stringify(newUser));
-        localStorage.setItem('isLoggedIn', 'true');
-        this.currentUserSubject.next(newUser);
-
-        observer.next({ user: newUser, token: 'mock-jwt-token' });
-        observer.complete();
-      }, 500);
-    });
+    return of({ user: newUser, token: 'mock-jwt-token' }).pipe(delay(500));
   }
 
   private getRandomAvatar(): string {
@@ -349,14 +323,6 @@ export class DataService {
       'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop'
     ];
     return avatars[Math.floor(Math.random() * avatars.length)];
-  }
-
-  getCurrentUser(): Observable<User> {
-    const userData = localStorage.getItem('currentUser');
-    if (userData) {
-      return of(JSON.parse(userData));
-    }
-    throw new Error('User not found');
   }
 
   logout(): void {
@@ -373,174 +339,139 @@ export class DataService {
     return this.currentUserSubject.value;
   }
 
-  // Content methods
+  // Content methods - no API calls, just static data
   getDocuments(filters?: any): Observable<{ documents: Document[] }> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        let documents = [...this.documents];
-        
-        if (filters) {
-          if (filters.search) {
-            const search = filters.search.toLowerCase();
-            documents = documents.filter((doc: Document) =>
-              doc.title.toLowerCase().includes(search) ||
-              doc.description.toLowerCase().includes(search) ||
-              doc.subject.toLowerCase().includes(search)
-            );
-          }
-          
-          if (filters.subject) {
-            documents = documents.filter((doc: Document) => doc.subject === filters.subject);
-          }
-          
-          if (filters.level) {
-            documents = documents.filter((doc: Document) => doc.level === filters.level);
-          }
-          
-          if (filters.type) {
-            documents = documents.filter((doc: Document) => doc.type === filters.type);
-          }
-        }
-        
-        observer.next({ documents });
-        observer.complete();
-      }, 300);
-    });
+    let documents = [...this.documents];
+    
+    if (filters) {
+      if (filters.search) {
+        const search = filters.search.toLowerCase();
+        documents = documents.filter((doc: Document) =>
+          doc.title.toLowerCase().includes(search) ||
+          doc.description.toLowerCase().includes(search) ||
+          doc.subject.toLowerCase().includes(search)
+        );
+      }
+      
+      if (filters.subject) {
+        documents = documents.filter((doc: Document) => doc.subject === filters.subject);
+      }
+      
+      if (filters.level) {
+        documents = documents.filter((doc: Document) => doc.level === filters.level);
+      }
+      
+      if (filters.type) {
+        documents = documents.filter((doc: Document) => doc.type === filters.type);
+      }
+    }
+    
+    return of({ documents }).pipe(delay(300));
   }
 
   getVideos(filters?: any): Observable<{ videos: Video[] }> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        let videos = [...this.videos];
-        
-        if (filters) {
-          if (filters.search) {
-            const search = filters.search.toLowerCase();
-            videos = videos.filter((video: Video) =>
-              video.title.toLowerCase().includes(search) ||
-              video.description.toLowerCase().includes(search) ||
-              video.subject.toLowerCase().includes(search)
-            );
-          }
-          
-          if (filters.subject) {
-            videos = videos.filter((video: Video) => video.subject === filters.subject);
-          }
-          
-          if (filters.level) {
-            videos = videos.filter((video: Video) => video.level === filters.level);
-          }
-        }
-        
-        observer.next({ videos });
-        observer.complete();
-      }, 300);
-    });
+    let videos = [...this.videos];
+    
+    if (filters) {
+      if (filters.search) {
+        const search = filters.search.toLowerCase();
+        videos = videos.filter((video: Video) =>
+          video.title.toLowerCase().includes(search) ||
+          video.description.toLowerCase().includes(search) ||
+          video.subject.toLowerCase().includes(search)
+        );
+      }
+      
+      if (filters.subject) {
+        videos = videos.filter((video: Video) => video.subject === filters.subject);
+      }
+      
+      if (filters.level) {
+        videos = videos.filter((video: Video) => video.level === filters.level);
+      }
+    }
+    
+    return of({ videos }).pipe(delay(300));
   }
 
-  // Settings methods
+  // Settings methods - localStorage only
   getSettings(): Observable<Settings> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        const defaultSettings: Settings = {
-          theme: 'auto',
-          language: 'fr',
-          notifications: {
-            email: true,
-            push: true,
-            newCourses: true,
-            reminders: false
-          },
-          privacy: {
-            profileVisibility: 'public',
-            showProgress: true,
-            allowMessages: true
-          },
-          preferences: {
-            autoplay: false,
-            subtitles: true,
-            playbackSpeed: 1,
-            downloadQuality: 'medium'
-          }
-        };
+    const defaultSettings: Settings = {
+      theme: 'auto',
+      language: 'fr',
+      notifications: {
+        email: true,
+        push: true,
+        newCourses: true,
+        reminders: false
+      },
+      privacy: {
+        profileVisibility: 'public',
+        showProgress: true,
+        allowMessages: true
+      },
+      preferences: {
+        autoplay: false,
+        subtitles: true,
+        playbackSpeed: 1,
+        downloadQuality: 'medium'
+      }
+    };
 
-        const savedSettings = localStorage.getItem('userSettings');
-        if (savedSettings) {
-          observer.next({ ...defaultSettings, ...JSON.parse(savedSettings) });
-        } else {
-          observer.next(defaultSettings);
-        }
-        observer.complete();
-      }, 200);
-    });
+    const savedSettings = localStorage.getItem('userSettings');
+    const settings = savedSettings ? { ...defaultSettings, ...JSON.parse(savedSettings) } : defaultSettings;
+    
+    return of(settings).pipe(delay(200));
   }
 
   updateSettings(settings: Settings): Observable<any> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        localStorage.setItem('userSettings', JSON.stringify(settings));
-        observer.next({ message: 'Settings updated successfully' });
-        observer.complete();
-      }, 300);
-    });
+    localStorage.setItem('userSettings', JSON.stringify(settings));
+    return of({ message: 'Settings updated successfully' }).pipe(delay(300));
   }
 
-  // Progress tracking methods
+  // Progress tracking methods - localStorage only
   getUserProgress(): Observable<any> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        const progress = localStorage.getItem('userProgress');
-        observer.next({ progress: progress ? JSON.parse(progress) : [] });
-        observer.complete();
-      }, 200);
-    });
+    const progress = localStorage.getItem('userProgress');
+    return of({ progress: progress ? JSON.parse(progress) : [] }).pipe(delay(200));
   }
 
   updateProgress(contentType: string, contentId: number, progress: number, completed: boolean = false): Observable<any> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        const existingProgress = JSON.parse(localStorage.getItem('userProgress') || '[]');
-        const progressItem = {
-          contentType,
-          contentId,
-          progress,
-          completed,
-          lastAccessed: new Date().toISOString()
-        };
-        
-        const index = existingProgress.findIndex((p: any) => 
-          p.contentType === contentType && p.contentId === contentId
-        );
-        
-        if (index >= 0) {
-          existingProgress[index] = progressItem;
-        } else {
-          existingProgress.push(progressItem);
-        }
-        
-        localStorage.setItem('userProgress', JSON.stringify(existingProgress));
-        observer.next({ message: 'Progress updated successfully' });
-        observer.complete();
-      }, 200);
-    });
+    const existingProgress = JSON.parse(localStorage.getItem('userProgress') || '[]');
+    const progressItem = {
+      contentType,
+      contentId,
+      progress,
+      completed,
+      lastAccessed: new Date().toISOString()
+    };
+    
+    const index = existingProgress.findIndex((p: any) => 
+      p.contentType === contentType && p.contentId === contentId
+    );
+    
+    if (index >= 0) {
+      existingProgress[index] = progressItem;
+    } else {
+      existingProgress.push(progressItem);
+    }
+    
+    localStorage.setItem('userProgress', JSON.stringify(existingProgress));
+    return of({ message: 'Progress updated successfully' }).pipe(delay(200));
   }
 
-  // Statistics methods
+  // Statistics methods - localStorage only
   getUserStats(): Observable<any> {
-    return new Observable(observer => {
-      setTimeout(() => {
-        const progress = JSON.parse(localStorage.getItem('userProgress') || '[]');
-        const completedCourses = progress.filter((p: any) => p.contentType === 'document' && p.completed).length;
-        const completedExercises = progress.filter((p: any) => p.contentType === 'exercise' && p.completed).length;
-        
-        observer.next({
-          courses: completedCourses || 24,
-          exercises: completedExercises || 156,
-          successRate: 89,
-          hoursThisWeek: 12
-        });
-        observer.complete();
-      }, 300);
-    });
+    const progress = JSON.parse(localStorage.getItem('userProgress') || '[]');
+    const completedCourses = progress.filter((p: any) => p.contentType === 'document' && p.completed).length;
+    const completedExercises = progress.filter((p: any) => p.contentType === 'exercise' && p.completed).length;
+    
+    const stats = {
+      courses: completedCourses || 24,
+      exercises: completedExercises || 156,
+      successRate: 89,
+      hoursThisWeek: 12
+    };
+    
+    return of(stats).pipe(delay(300));
   }
 }

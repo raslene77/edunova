@@ -441,8 +441,6 @@ export class DashboardComponent implements OnInit {
   selectedType = '';
   activeTab = 'documents';
 
-  constructor(private apiService: ApiService) {}
-  constructor(private dataService: DataService, private router: Router) {}
 
   ngOnInit() {
     this.loadDocuments();

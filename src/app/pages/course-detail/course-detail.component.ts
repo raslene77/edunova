@@ -493,9 +493,6 @@ export class CourseDetailComponent implements OnInit {
     if (!this.document) return;
 
     this.apiService.getDocuments().subscribe({
-    }
-    )
-    this.dataService.getDocuments().subscribe({
       next: (response) => {
         const allDocuments = response.documents.filter(doc => doc.id !== this.document!.id);
         
