@@ -441,6 +441,7 @@ export class DashboardComponent implements OnInit {
   selectedType = '';
   activeTab = 'documents';
 
+  constructor(private dataService: DataService, private router: Router) {}
 
   ngOnInit() {
     this.loadDocuments();
@@ -456,11 +457,11 @@ export class DashboardComponent implements OnInit {
     };
 
     this.dataService.getDocuments(filters).subscribe({
-      next: (response) => {
+      next: (response: { documents: Document[] }) => {
         this.documents = response.documents;
         this.filteredDocuments = response.documents;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading documents:', error);
       }
     });
@@ -474,11 +475,11 @@ export class DashboardComponent implements OnInit {
     };
 
     this.dataService.getVideos(filters).subscribe({
-      next: (response) => {
+      next: (response: { videos: Video[] }) => {
         this.videos = response.videos;
         this.filteredVideos = response.videos;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading videos:', error);
       }
     });
