@@ -492,24 +492,24 @@ export class CourseDetailComponent implements OnInit {
   loadRelatedContent() {
     if (!this.document) return;
 
-    this.apiService.getDocuments().subscribe({
-      next: (response) => {
-        const allDocuments = response.documents.filter(doc => doc.id !== this.document!.id);
+    this.dataService.getDocuments().subscribe({
+      next: (response: { documents: Document[] }) => {
+        const allDocuments = response.documents.filter((doc: Document) => doc.id !== this.document!.id);
         
         // Filter by same subject and level
-        const sameSubjectAndLevel = allDocuments.filter(doc => 
+        const sameSubjectAndLevel = allDocuments.filter((doc: Document) => 
           doc.subject === this.document!.subject && doc.level === this.document!.level
         );
 
         if (this.document!.type === 'cours') {
-          this.relatedExercises = sameSubjectAndLevel.filter(doc => doc.type === 'exercices');
-          this.relatedFiches = sameSubjectAndLevel.filter(doc => doc.type === 'fiches');
+          this.relatedExercises = sameSubjectAndLevel.filter((doc: Document) => doc.type === 'exercices');
+          this.relatedFiches = sameSubjectAndLevel.filter((doc: Document) => doc.type === 'fiches');
         } else if (this.document!.type === 'exercices') {
-          this.relatedCourses = sameSubjectAndLevel.filter(doc => doc.type === 'cours');
-          this.relatedFiches = sameSubjectAndLevel.filter(doc => doc.type === 'fiches');
+          this.relatedCourses = sameSubjectAndLevel.filter((doc: Document) => doc.type === 'cours');
+          this.relatedFiches = sameSubjectAndLevel.filter((doc: Document) => doc.type === 'fiches');
         } else if (this.document!.type === 'fiches') {
-          this.relatedCourses = sameSubjectAndLevel.filter(doc => doc.type === 'cours');
-          this.relatedExercises = sameSubjectAndLevel.filter(doc => doc.type === 'exercices');
+          this.relatedCourses = sameSubjectAndLevel.filter((doc: Document) => doc.type === 'cours');
+          this.relatedExercises = sameSubjectAndLevel.filter((doc: Document) => doc.type === 'exercices');
         }
       },
       error: (error) => {
